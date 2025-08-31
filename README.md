@@ -1,3 +1,5 @@
+<img width="1024" height="1024" alt="image" src="https://github.com/user-attachments/assets/38a3c5c8-ca31-499d-b99d-c4c834532b35" />
+
 StockSense 📈
 
 StockSense is an intelligent stock market analysis platform that provides real-time analytics, predictive insights, and professional-grade visualization tools. Built with Python and Flask, it empowers investors with actionable data and intuitive dashboards for smarter investment decisions.
