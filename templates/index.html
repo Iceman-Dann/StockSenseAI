@@ -1,1 +1,2410 @@
 
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StockSense AI Dashboard - Intelligent Stock Market Analysis</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #2962ff;
+            --secondary: #0039cb;
+            --success: #00c853;
+            --warning: #ffab00;
+            --danger: #ff1744;
+            --dark: #0a0a1a;
+            --light: #f8f9fa;
+            --card-bg: #1a1a2e;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --ai-glow: #00ff88;
+            --gradient-start: #0c0c2d;
+            --gradient-end: #1a1a40;
+            --accent-purple: #8b5cf6;
+            --accent-cyan: #06b6d4;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: rgba(10, 10, 35, 0.95) !important;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            padding: 15px 0;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.8rem;
+            background: linear-gradient(45deg, var(--ai-glow), var(--primary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-primary) !important;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: var(--ai-glow) !important;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--ai-glow);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding-top: 100px;
+            min-height: 100vh;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .card.ai-enhanced {
+            border: 1px solid var(--ai-glow);
+            box-shadow: 0 10px 40px rgba(0, 255, 136, 0.1);
+        }
+
+        .card-header {
+            background: transparent;
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        /* Buttons */
+        .btn-ai {
+            background: linear-gradient(135deg, var(--ai-glow), #00c853);
+            color: #000;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
+            text-decoration: none;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .btn-ai:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 255, 136, 0.5);
+            color: #000;
+        }
+
+        .btn-gradient {
+            background: linear-gradient(135deg, var(--primary), var(--accent-purple));
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-gradient:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(41, 98, 255, 0.4);
+            color: white;
+        }
+
+        /* Form Controls */
+        .form-control, .form-select {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            padding: 12px 15px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--ai-glow);
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+            color: var(--text-primary);
+        }
+
+        /* AI Elements */
+        .ai-insight {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 200, 83, 0.1));
+            border: 1px solid var(--ai-glow);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-insight::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--ai-glow), transparent);
+            animation: aiGlow 3s infinite;
+        }
+
+        @keyframes aiGlow {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        .loading-ai {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0, 255, 136, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--ai-glow);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .real-time-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--ai-glow);
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* Stock Change Colors */
+        .stock-change-positive {
+            color: var(--success) !important;
+        }
+
+        .stock-change-negative {
+            color: var(--danger) !important;
+        }
+
+        /* Chart Container */
+        .chart-container {
+            position: relative;
+            height: 400px;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 10px;
+        }
+
+        /* AI Chat */
+        .ai-assistant {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--ai-glow), #00c853);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-size: 28px;
+            cursor: pointer;
+            box-shadow: 0 8px 30px rgba(0, 255, 136, 0.4);
+            z-index: 1000;
+            transition: all 0.3s ease;
+            animation: pulse-glow 3s infinite;
+        }
+
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 10px var(--ai-glow); }
+            50% { box-shadow: 0 0 30px var(--ai-glow), 0 0 60px var(--ai-glow); }
+            100% { box-shadow: 0 0 10px var(--ai-glow); }
+        }
+
+        .ai-chat-container {
+            position: fixed;
+            bottom: 110px;
+            right: 30px;
+            width: 450px;
+            height: 600px;
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transform: translateY(50px) scale(0.9);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border: 1px solid var(--ai-glow);
+        }
+
+        .ai-chat-container.open {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, var(--ai-glow), #00c853);
+            color: #000;
+            padding: 20px;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 12px 18px;
+            border-radius: 20px;
+            max-width: 85%;
+            word-wrap: break-word;
+            animation: messageSlide 0.3s ease;
+        }
+
+        @keyframes messageSlide {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.bot {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(0, 200, 83, 0.2));
+            border: 1px solid var(--ai-glow);
+            align-self: flex-start;
+        }
+
+        .message.user {
+            background: var(--primary);
+            color: white;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+
+        .chat-input {
+            padding: 20px;
+            display: flex;
+            gap: 10px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .chat-input input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color);
+            border-radius: 25px;
+            padding: 12px 18px;
+            color: var(--text-primary);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        /* Table Styles */
+        .table {
+            color: var(--text-primary);
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .table th {
+            border-color: var(--border-color);
+            color: var(--text-primary);
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+        }
+
+        .table td {
+            border-color: var(--border-color);
+            color: var(--text-primary);
+            padding: 15px;
+            vertical-align: middle;
+        }
+
+        .table-hover tbody tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: scale(1.01);
+            transition: all 0.2s ease;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .ai-chat-container {
+                width: 90vw;
+                right: 5vw;
+                height: 70vh;
+            }
+            
+            .card-body {
+                padding: 1.5rem;
+            }
+            
+            .chart-container {
+                height: 300px;
+            }
+        }
+
+        /* News Items */
+        .news-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 3px solid var(--ai-glow);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .news-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        /* Progress Bars */
+        .confidence-meter, .sentiment-indicator {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .confidence-fill, .sentiment-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--ai-glow), var(--success));
+            border-radius: 4px;
+            transition: width 0.8s ease;
+        }
+
+        .sentiment-positive { background: linear-gradient(90deg, var(--success), var(--ai-glow)); }
+        .sentiment-neutral { background: linear-gradient(90deg, var(--warning), #ffc107); }
+        .sentiment-negative { background: linear-gradient(90deg, var(--danger), #dc3545); }
+
+        /* Enhanced visual effects */
+        .glow-effect {
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+        }
+
+        .portfolio-overview {
+            background: linear-gradient(135deg, rgba(41, 98, 255, 0.1), rgba(139, 92, 246, 0.1));
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        .metric-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--ai-glow);
+            transform: translateY(-5px);
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--ai-glow);
+        }
+
+        .metric-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Toast notifications */
+        .toast-container {
+            position: fixed;
+            top: 100px;
+            right: 30px;
+            z-index: 1050;
+        }
+
+        .toast {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: toastIn 0.3s ease, toastOut 0.3s ease 2.7s forwards;
+        }
+
+        .toast.success {
+            border-left: 4px solid var(--success);
+        }
+
+        .toast.error {
+            border-left: 4px solid var(--danger);
+        }
+
+        .toast.info {
+            border-left: 4px solid var(--primary);
+        }
+
+        @keyframes toastIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes toastOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--ai-glow);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00c853;
+        }
+
+        /* Crypto specific styles */
+        .crypto-badge {
+            background: linear-gradient(135deg, #f7931a, #f2a900);
+            color: #000;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+        }
+
+        /* Earnings calendar styles */
+        .earnings-table {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .earnings-table th {
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        /* Portfolio management styles */
+        .portfolio-form {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* Technical indicators */
+        .indicator-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .indicator-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .indicator-good {
+            color: var(--success);
+        }
+
+        .indicator-neutral {
+            color: var(--warning);
+        }
+
+        .indicator-bad {
+            color: var(--danger);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-brain me-2"></i>StockSense AI
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#home">
+                            <span class="real-time-indicator"></span>Live Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#analysis">AI Analysis</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#crypto">Crypto</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#portfolio">Portfolio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#earnings">Earnings</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#news">News</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <!-- Hero Dashboard Section -->
+        <section id="home" class="py-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12 text-center mb-5">
+                        <h1 class="display-4 fw-bold mb-3" style="background: linear-gradient(45deg, var(--text-primary), var(--ai-glow)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
+                            AI-Powered Trading Intelligence
+                        </h1>
+                        <p class="lead" style="color: var(--text-secondary);">
+                            Real-time market analysis, predictive insights, and personalized recommendations
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Portfolio Overview -->
+                <div class="portfolio-overview fade-in">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="metric-card">
+                                <div class="metric-value" id="totalValue">$0.00</div>
+                                <div class="metric-label">Portfolio Value</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="metric-card">
+                                <div class="metric-value" id="dailyChange">+0.00%</div>
+                                <div class="metric-label">Today's Change</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="metric-card">
+                                <div class="metric-value" id="aiScore">85/100</div>
+                                <div class="metric-label">AI Score</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="metric-card">
+                                <div class="metric-value" id="riskLevel">Medium</div>
+                                <div class="metric-label">Risk Level</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Real-time Market Overview -->
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="card ai-enhanced fade-in">
+                            <div class="card-header">
+                                <h4><span class="real-time-indicator"></span>Live Market Overview</h4>
+                                <button class="btn btn-ai btn-sm" onclick="loadMarketOverview()">
+                                    <i class="fas fa-sync me-1"></i>Refresh
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <div id="liveMarketOverview">
+                                    <div class="text-center py-4">
+                                        <div class="loading-ai me-2"></div>
+                                        Loading real-time market data...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="card ai-enhanced fade-in">
+                            <div class="card-header">
+                                <h4><i class="fas fa-brain me-2"></i>AI Market Sentiment</h4>
+                            </div>
+                            <div class="card-body">
+                                <div id="marketSentiment">Analyzing market conditions...</div>
+                                <div class="sentiment-indicator mt-3">
+                                    <div class="sentiment-fill sentiment-positive" id="sentimentBar" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card ai-enhanced fade-in mt-4">
+                            <div class="card-header">
+                                <h4><i class="fas fa-pulse me-2"></i>Market Pulse</h4>
+                            </div>
+                            <div class="card-body">
+                                <div id="marketPulse">
+                                    <div class="text-center py-3">
+                                        <div class="loading-ai"></div>
+                                        <p>Reading market pulse...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Crypto Market Overview -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="card ai-enhanced fade-in">
+                            <div class="card-header">
+                                <h4><i class="fas fa-coins me-2"></i>Crypto Market Overview</h4>
+                                <button class="btn btn-ai btn-sm" onclick="loadCryptoOverview()">
+                                    <i class="fas fa-sync me-1"></i>Refresh
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <div id="cryptoOverview" class="row">
+                                    <div class="text-center py-4">
+                                        <div class="loading-ai me-2"></div>
+                                        Loading cryptocurrency data...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI Analysis Section -->
+        <section id="analysis" class="py-5" style="background: rgba(10, 10, 35, 0.7);">
+            <div class="container">
+                <h2 class="text-center mb-5" style="color: var(--text-primary); font-weight: 800;">
+                    <i class="fas fa-robot me-3"></i>AI Stock Analysis Engine
+                </h2>
+                
+                <div class="row justify-content-center">
+                    <div class="col-lg-10">
+                        <div class="card ai-enhanced">
+                            <div class="card-header">
+                                <h4><i class="fas fa-brain me-2"></i>Advanced AI Analysis</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Stock Symbol</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="aiTicker" placeholder="Enter symbol (e.g., AAPL)">
+                                            <button class="btn btn-outline-secondary" onclick="suggestRandomStock()">
+                                                <i class="fas fa-dice me-1"></i>Random
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">Analysis Type</label>
+                                        <select class="form-select" id="analysisDepth">
+                                            <option value="quick">Quick Scan</option>
+                                            <option value="deep" selected>Deep Analysis</option>
+                                            <option value="predictive">Predictive Model</option>
+                                            <option value="advanced">Advanced Multi-Factor</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">Chart Type</label>
+                                        <select class="form-select" id="chartType">
+                                            <option value="line">Line Chart</option>
+                                            <option value="bar">Bar Chart</option>
+                                            <option value="area">Area Chart</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="text-center mb-4">
+                                    <button class="btn btn-ai btn-lg" id="analyzeBtn">
+                                        <i class="fas fa-brain me-2"></i>Analyze with AI
+                                    </button>
+                                    <button class="btn btn-gradient btn-lg ms-2" onclick="analyzePortfolio()">
+                                        <i class="fas fa-briefcase me-2"></i>Analyze Portfolio
+                                    </button>
+                                </div>
+
+                                <!-- Analysis Results -->
+                                <div id="analysisResults" style="display: none;">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="ai-insight">
+                                                <h5><i class="fas fa-lightbulb me-2"></i>AI Recommendation</h5>
+                                                <div class="d-flex align-items-center mb-3">
+                                                    <h4 class="me-3">Decision:</h4>
+                                                    <span class="badge bg-success fs-6" id="aiDecision">ANALYZING...</span>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <strong>Confidence:</strong> <span id="aiConfidence">0%</span>
+                                                    <div class="confidence-meter">
+                                                        <div class="confidence-fill" id="confidenceBar" style="width: 0%;"></div>
+                                                    </div>
+                                                </div>
+                                                <div id="aiReasoning">AI is analyzing multiple data points...</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="ai-insight">
+                                                <h5><i class="fas fa-chart-line me-2"></i>Key Metrics</h5>
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <div class="metric-card">
+                                                            <div class="metric-value" id="currentPrice">$0.00</div>
+                                                            <div class="metric-label">Current Price</div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <div class="metric-card">
+                                                            <div class="metric-value" id="targetPrice">$0.00</div>
+                                                            <div class="metric-label">AI Target</div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-6 mt-3">
+                                                        <div class="indicator-card">
+                                                            <div class="metric-label">RSI</div>
+                                                            <div class="indicator-value" id="rsiValue">0</div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-6 mt-3">
+                                                        <div class="indicator-card">
+                                                            <div class="metric-label">MACD</div>
+                                                            <div class="indicator-value" id="macdValue">Neutral</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row mt-4">
+                                        <div class="col-md-8">
+                                            <h5><i class="fas fa-chart-area me-2"></i>Price Chart & Technical Analysis</h5>
+                                            <div class="chart-container">
+                                                <canvas id="stockChart"></canvas>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <h5><i class="fas fa-newspaper me-2"></i>Related News</h5>
+                                            <div id="relatedNews" style="max-height: 400px; overflow-y: auto;">
+                                                <div class="text-center py-4">
+                                                    <div class="loading-ai"></div>
+                                                    <p>Loading news...</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI Watchlist Section -->
+        <section id="watchlist" class="py-5">
+            <div class="container">
+                <h2 class="text-center mb-5" style="color: var(--text-primary); font-weight: 800;">
+                    <i class="fas fa-eye me-3"></i>AI Smart Watchlist
+                </h2>
+                
+                <div class="card ai-enhanced">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h4><i class="fas fa-list me-2"></i>Your AI-Curated Stocks</h4>
+                            <div>
+                                <button class="btn btn-ai btn-sm me-2" onclick="optimizeWatchlist()">
+                                    <i class="fas fa-magic me-1"></i>AI Optimize
+                                </button>
+                                <button class="btn btn-gradient btn-sm" id="refreshWatchlistBtn">
+                                    <i class="fas fa-sync me-1"></i>Refresh
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="addStockInput" placeholder="Add stock symbol">
+                                    <button class="btn btn-ai" id="addStockBtn">
+                                        <i class="fas fa-plus me-1"></i>Add
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Symbol</th>
+                                        <th>Price</th>
+                                        <th>Change</th>
+                                        <th>AI Score</th>
+                                        <th>Prediction</th>
+                                        <th>Risk</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="watchlistTable">
+                                    <tr>
+                                        <td colspan="7" class="text-center py-4">
+                                            <div class="loading-ai me-2"></div>
+                                            Building your optimal watchlist...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Portfolio Management Section -->
+        <section id="portfolio" class="py-5" style="background: rgba(10, 10, 35, 0.7);">
+            <div class="container">
+                <h2 class="text-center mb-5" style="color: var(--text-primary); font-weight: 800;">
+                    <i class="fas fa-briefcase me-3"></i>AI Portfolio Manager
+                </h2>
+                
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="card ai-enhanced">
+                            <div class="card-header">
+                                <h4><i class="fas fa-chart-pie me-2"></i>Portfolio Allocation</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="portfolioChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card ai-enhanced mt-4">
+                            <div class="card-header">
+                                <h4><i class="fas fa-plus-circle me-2"></i>Add to Portfolio</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="portfolio-form">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label class="form-label">Stock Symbol</label>
+                                            <input type="text" class="form-control" id="portfolioSymbol" placeholder="e.g., AAPL">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Shares</label>
+                                            <input type="number" class="form-control" id="portfolioShares" placeholder="10" min="1">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Avg. Price</label>
+                                            <input type="number" class="form-control" id="portfolioPrice" placeholder="150.00" step="0.01" min="0.01">
+                                        </div>
+                                        <div class="col-md-2 d-flex align-items-end">
+                                            <button class="btn btn-ai w-100" id="addPortfolioBtn">
+                                                <i class="fas fa-plus me-1"></i>Add
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Symbol</th>
+                                                <th>Shares</th>
+                                                <th>Avg. Price</th>
+                                                <th>Current</th>
+                                                <th>Value</th>
+                                                <th>Gain/Loss</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="portfolioTable">
+                                            <tr>
+                                                <td colspan="7" class="text-center py-4">
+                                                    <div class="loading-ai me-2"></div>
+                                                    Loading portfolio data...
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="card ai-enhanced mb-4">
+                            <div class="card-header">
+                                <h4><i class="fas fa-robot me-2"></i>AI Recommendations</h4>
+                            </div>
+                            <div class="card-body">
+                                <div id="aiRecommendations">
+                                    <div class="text-center py-3">
+                                        <div class="loading-ai"></div>
+                                        <p>Generating recommendations...</p>
+                                    </div>
+                                </div>
+                                <div class="text-center mt-3">
+                                    <button class="btn btn-ai btn-sm" onclick="generateRecommendations()">
+                                        <i class="fas fa-magic me-1"></i>Refresh AI Advice
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card ai-enhanced">
+                            <div class="card-header">
+                                <h4><i class="fas fa-shield-alt me-2"></i>Risk Analysis</h4>
+                            </div>
+                            <div class="card-body">
+                                <div id="riskAnalysis">
+                                    <div class="text-center py-3">
+                                        <div class="loading-ai"></div>
+                                        <p>Calculating risk metrics...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Earnings Calendar Section -->
+        <section id="earnings" class="py-5">
+            <div class="container">
+                <h2 class="text-center mb-5" style="color: var(--text-primary); font-weight: 800;">
+                    <i class="fas fa-calendar-alt me-3"></i>Earnings Calendar
+                </h2>
+                
+                <div class="card ai-enhanced">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h4><i class="fas fa-chart-line me-2"></i>Upcoming Earnings Reports</h4>
+                            <button class="btn btn-ai btn-sm" onclick="loadEarningsCalendar()">
+                                <i class="fas fa-sync me-1"></i>Refresh
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="earningsCalendar">
+                            <div class="text-center py-4">
+                                <div class="loading-ai me-2"></div>
+                                Loading earnings calendar...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- News Section -->
+        <section id="news" class="py-5">
+            <div class="container">
+                <h2 class="text-center mb-5" style="color: var(--text-primary); font-weight: 800;">
+                    <i class="fas fa-newspaper me-3"></i>AI-Filtered Market News
+                </h2>
+                
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="card ai-enhanced">
+                            <div class="card-header">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h4><i class="fas fa-rss me-2"></i>Live News Feed</h4>
+                                    <div>
+                                        <button class="btn btn-outline-light btn-sm me-2" id="refreshNewsBtn">
+                                            <i class="fas fa-sync me-1"></i>Refresh
+                                        </button>
+                                        <div class="btn-group" role="group">
+                                            <button class="btn btn-outline-light btn-sm active" onclick="filterNews('all')">All</button>
+                                            <button class="btn btn-outline-light btn-sm" onclick="filterNews('bullish')">Bullish</button>
+                                            <button class="btn btn-outline-light btn-sm" onclick="filterNews('bearish')">Bearish</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div id="newsFeed">
+                                    <div class="text-center py-4">
+                                        <div class="loading-ai me-2"></div>
+                                        Loading latest market news...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="card ai-enhanced mb-4">
+                            <div class="card-header">
+                                <h4><i class="fas fa-calendar me-2"></i>Economic Calendar</h4>
+                            </div>
+                            <div class="card-body">
+                                <div id="economicCalendar">
+                                    <div class="text-center py-3">
+                                        <div class="loading-ai"></div>
+                                        <p>Loading events...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card ai-enhanced">
+                            <div class="card-header">
+                                <h4><i class="fas fa-bell me-2"></i>Price Alerts</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="Stock symbol" id="alertSymbol">
+                                        <button class="btn btn-ai">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div id="priceAlerts">
+                                    <div class="text-center py-3">
+                                        <p>No alerts set up yet</p>
+                                        <small class="text-muted">Add stocks to monitor price movements</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- AI Assistant Chat -->
+    <div class="ai-assistant" id="aiAssistant">
+        <i class="fas fa-robot"></i>
+    </div>
+    
+    <div class="ai-chat-container" id="aiChatContainer">
+        <div class="chat-header">
+            <span><i class="fas fa-robot me-2"></i>AI Trading Assistant</span>
+            <button class="btn btn-sm" id="closeChat" style="background: none; border: none; color: #000;">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot">
+                Hello! I'm your AI trading assistant. I can help you with:
+                <br><br>
+                • Real-time stock analysis
+                <br>• Market insights and predictions
+                <br>• Portfolio optimization
+                <br>• Trading education
+                <br>• Risk management
+                <br><br>
+                What would you like to explore today?
+            </div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="chatInput" placeholder="Ask me anything about trading...">
+            <button class="btn btn-ai btn-sm" id="sendMessage">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // API Configuration
+        const API_ENDPOINTS = {
+            stock: '/api/stock/',
+            crypto: '/api/crypto/',
+            analyze: '/api/analyze',
+            news: '/api/news',
+            earnings: '/api/earnings',
+            watchlist: '/api/watchlist',
+            watchlistAdd: '/api/watchlist/add',
+            watchlistRemove: '/api/watchlist/remove/',
+            portfolio: '/api/portfolio',
+            portfolioAdd: '/api/portfolio/add',
+            portfolioRemove: '/api/portfolio/remove/',
+            marketOverview: '/api/market/overview',
+            chat: '/api/chat'
+        };
+
+        // Global variables
+        let stockChart = null;
+        let portfolioChart = null;
+        let marketData = {};
+        let watchlistData = [];
+        let portfolioData = [];
+
+        // Initialize application
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+            setupEventListeners();
+            startRealTimeUpdates();
+        });
+
+        function initializeApp() {
+            updatePortfolioMetrics();
+            loadMarketOverview();
+            loadCryptoOverview();
+            loadWatchlist();
+            loadPortfolio();
+            loadNewsFeed();
+            loadEarningsCalendar();
+            updateMarketPulse();
+            updateEconomicCalendar();
+            generateRecommendations();
+            updateRiskAnalysis();
+            
+            // Initialize portfolio chart
+            initPortfolioChart();
+            
+            console.log('StockSense AI Dashboard initialized successfully');
+        }
+
+        function setupEventListeners() {
+            // AI Analysis
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            if (analyzeBtn) {
+                analyzeBtn.addEventListener('click', performAIAnalysis);
+            }
+
+            // AI Chat
+            const aiAssistant = document.getElementById('aiAssistant');
+            const closeChat = document.getElementById('closeChat');
+            const sendMessage = document.getElementById('sendMessage');
+            const chatInput = document.getElementById('chatInput');
+
+            if (aiAssistant) aiAssistant.addEventListener('click', openAIChat);
+            if (closeChat) closeChat.addEventListener('click', closeAIChat);
+            if (sendMessage) sendMessage.addEventListener('click', sendAIMessage);
+            if (chatInput) {
+                chatInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') sendAIMessage();
+                });
+            }
+            
+            // Watchlist management
+            const addStockBtn = document.getElementById('addStockBtn');
+            if (addStockBtn) {
+                addStockBtn.addEventListener('click', addToWatchlist);
+            }
+            
+            const refreshWatchlistBtn = document.getElementById('refreshWatchlistBtn');
+            if (refreshWatchlistBtn) {
+                refreshWatchlistBtn.addEventListener('click', loadWatchlist);
+            }
+            
+            // Portfolio management
+            const addPortfolioBtn = document.getElementById('addPortfolioBtn');
+            if (addPortfolioBtn) {
+                addPortfolioBtn.addEventListener('click', addToPortfolio);
+            }
+            
+            // News refresh
+            const refreshNewsBtn = document.getElementById('refreshNewsBtn');
+            if (refreshNewsBtn) {
+                refreshNewsBtn.addEventListener('click', loadNewsFeed);
+            }
+        }
+
+        // Real-time updates
+        function startRealTimeUpdates() {
+            // Update market data every 30 seconds
+            setInterval(() => {
+                updatePortfolioMetrics();
+                loadMarketOverview();
+                loadCryptoOverview();
+                loadWatchlist();
+                loadPortfolio();
+            }, 30000);
+
+            // Update news every 5 minutes
+            setInterval(() => {
+                loadNewsFeed();
+                updateMarketPulse();
+                loadEarningsCalendar();
+            }, 300000);
+        }
+
+        async function updatePortfolioMetrics() {
+            try {
+                const response = await fetch(API_ENDPOINTS.portfolio);
+                const data = await response.json();
+                
+                if (data.error) {
+                    console.error('Error fetching portfolio:', data.error);
+                    return;
+                }
+                
+                document.getElementById('totalValue').textContent = '$' + data.total_value.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                
+                // Calculate daily change (simulated)
+                const dailyChangePercent = ((Math.random() - 0.5) * 6).toFixed(2);
+                document.getElementById('dailyChange').textContent = (dailyChangePercent >= 0 ? '+' : '') + dailyChangePercent + '%';
+                document.getElementById('dailyChange').className = dailyChangePercent >= 0 ? 'metric-value stock-change-positive' : 'metric-value stock-change-negative';
+                
+                // AI Score (simulated)
+                const aiScore = Math.floor(Math.random() * 30 + 70);
+                document.getElementById('aiScore').textContent = aiScore + '/100';
+                
+                // Risk Level (simulated)
+                const riskLevels = ['Low', 'Medium', 'High'];
+                const risk = riskLevels[Math.floor(Math.random() * 3)];
+                document.getElementById('riskLevel').textContent = risk;
+            } catch (error) {
+                console.error('Error updating portfolio metrics:', error);
+            }
+        }
+
+        async function loadMarketOverview() {
+            const container = document.getElementById('liveMarketOverview');
+            if (!container) return;
+
+            try {
+                const response = await fetch(API_ENDPOINTS.marketOverview);
+                const marketData = await response.json();
+                
+                if (marketData.error) {
+                    container.innerHTML = '<div class="text-center py-4 text-muted">Market data temporarily unavailable</div>';
+                    return;
+                }
+                
+                let html = '<div class="row">';
+                
+                marketData.stocks.forEach(stock => {
+                    const changeClass = stock.change >= 0 ? 'stock-change-positive' : 'stock-change-negative';
+                    
+                    html += `
+                        <div class="col-md-6 col-lg-4 mb-3">
+                            <div class="metric-card" style="cursor: pointer;" onclick="quickAnalyze('${stock.symbol}')">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>${stock.symbol}</strong>
+                                        <div class="metric-value" style="font-size: 1.5rem;">$${stock.price.toFixed(2)}</div>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="${changeClass}" style="font-weight: 600;">
+                                            ${stock.change >= 0 ? '+' : ''}${stock.change.toFixed(2)}
+                                        </div>
+                                        <div class="${changeClass}" style="font-size: 0.9rem;">
+                                            ${stock.change_percent >= 0 ? '+' : ''}${stock.change_percent.toFixed(2)}%
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+                container.innerHTML = html;
+                
+                // Update market sentiment
+                const sentimentValue = Math.floor(Math.random() * 100);
+                document.getElementById('sentimentBar').style.width = sentimentValue + '%';
+                
+                const sentimentText = sentimentValue > 70 ? 'Bullish' : sentimentValue > 40 ? 'Neutral' : 'Bearish';
+                document.getElementById('marketSentiment').innerHTML = `AI detects <strong>${sentimentText}</strong> market sentiment (${sentimentValue}/100)`;
+            } catch (error) {
+                console.error('Error loading market overview:', error);
+                container.innerHTML = '<div class="text-center py-4 text-muted">Error loading market data</div>';
+            }
+        }
+
+        async function loadCryptoOverview() {
+            const container = document.getElementById('cryptoOverview');
+            if (!container) return;
+
+            const symbols = ['BTC', 'ETH', 'ADA', 'DOGE'];
+            let html = '';
+
+            for (const symbol of symbols) {
+                try {
+                    const response = await fetch(API_ENDPOINTS.crypto + symbol);
+                    const data = await response.json();
+                    
+                    if (data.error) {
+                        html += `<div class="col-md-3 col-6 mb-3">
+                            <div class="metric-card">
+                                <div class="text-center">
+                                    <strong>${symbol}</strong>
+                                    <div class="text-muted">Data unavailable</div>
+                                </div>
+                            </div>
+                        </div>`;
+                        continue;
+                    }
+                    
+                    const changeClass = data.change >= 0 ? 'stock-change-positive' : 'stock-change-negative';
+                    
+                    html += `
+                        <div class="col-md-3 col-6 mb-3">
+                            <div class="metric-card" style="cursor: pointer;" onclick="analyzeCrypto('${symbol}')">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>${symbol}</strong>
+                                        <span class="crypto-badge ms-1">Crypto</span>
+                                        <div class="metric-value" style="font-size: 1.2rem;">$${data.price.toFixed(2)}</div>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="${changeClass}" style="font-weight: 600;">
+                                            ${data.change >= 0 ? '+' : ''}${data.change.toFixed(2)}
+                                        </div>
+                                        <div class="${changeClass}" style="font-size: 0.9rem;">
+                                            ${data.change_percent >= 0 ? '+' : ''}${data.change_percent.toFixed(2)}%
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } catch (error) {
+                    console.error(`Error fetching ${symbol}:`, error);
+                    html += `<div class="col-md-3 col-6 mb-3">
+                        <div class="metric-card">
+                            <div class="text-center">
+                                <strong>${symbol}</strong>
+                                <div class="text-muted">Data unavailable</div>
+                            </div>
+                        </div>
+                    </div>`;
+                }
+            }
+            
+            container.innerHTML = html;
+        }
+
+        async function loadWatchlist() {
+            const table = document.getElementById('watchlistTable');
+            if (!table) return;
+
+            try {
+                // Get watchlist from server
+                const watchlistResponse = await fetch(API_ENDPOINTS.watchlist);
+                const watchlist = await watchlistResponse.json();
+                
+                if (watchlist.error) {
+                    table.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-muted">Error loading watchlist</td></tr>';
+                    return;
+                }
+                
+                let html = '';
+                
+                for (const symbol of watchlist) {
+                    try {
+                        const stockResponse = await fetch(API_ENDPOINTS.stock + symbol);
+                        const stockData = await stockResponse.json();
+                        
+                        if (stockData.error) {
+                            continue;
+                        }
+                        
+                        // Get AI analysis for the stock
+                        const analysisResponse = await fetch(API_ENDPOINTS.analyze, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                symbol: symbol,
+                                analysis_type: 'quick'
+                            })
+                        });
+                        
+                        const analysis = await analysisResponse.json();
+                        
+                        const changeClass = stockData.change >= 0 ? 'stock-change-positive' : 'stock-change-negative';
+                        
+                        html += `
+                            <tr>
+                                <td><strong>${symbol}</strong></td>
+                                <td>$${stockData.price.toFixed(2)}</td>
+                                <td class="${changeClass}">${stockData.change >= 0 ? '+' : ''}${stockData.change.toFixed(2)} (${stockData.change_percent >= 0 ? '+' : ''}${stockData.change_percent.toFixed(2)}%)</td>
+                                <td><span class="badge" style="background: var(--ai-glow); color: #000;">${analysis.analysis.confidence}/100</span></td>
+                                <td><span class="badge ${analysis.analysis.decision === 'BUY' ? 'bg-success' : analysis.analysis.decision === 'SELL' ? 'bg-danger' : 'bg-warning'}">${analysis.analysis.decision}</span></td>
+                                <td><span class="badge ${analysis.analysis.confidence > 80 ? 'bg-success' : analysis.analysis.confidence > 60 ? 'bg-warning' : 'bg-danger'}">${analysis.analysis.confidence > 80 ? 'Low' : analysis.analysis.confidence > 60 ? 'Medium' : 'High'}</span></td>
+                                <td>
+                                    <button class="btn btn-ai btn-sm me-1" onclick="analyzeStock('${symbol}')">
+                                        <i class="fas fa-brain"></i>
+                                    </button>
+                                    <button class="btn btn-outline-danger btn-sm" onclick="removeFromWatchlist('${symbol}')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    } catch (error) {
+                        console.error(`Error loading ${symbol}:`, error);
+                    }
+                }
+                
+                if (!html) {
+                    html = '<tr><td colspan="7" class="text-center py-4 text-muted">No stocks in watchlist</td></tr>';
+                }
+                
+                table.innerHTML = html;
+            } catch (error) {
+                console.error('Error loading watchlist:', error);
+                table.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-muted">Error loading watchlist</td></tr>';
+            }
+        }
+
+        async function loadPortfolio() {
+            const table = document.getElementById('portfolioTable');
+            if (!table) return;
+
+            try {
+                const response = await fetch(API_ENDPOINTS.portfolio);
+                const data = await response.json();
+                
+                if (data.error) {
+                    table.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-muted">Error loading portfolio</td></tr>';
+                    return;
+                }
+                
+                let html = '';
+                
+                for (const holding of data.portfolio) {
+                    const changeClass = holding.gain_loss >= 0 ? 'stock-change-positive' : 'stock-change-negative';
+                    
+                    html += `
+                        <tr>
+                            <td><strong>${holding.symbol}</strong></td>
+                            <td>${holding.shares}</td>
+                            <td>$${holding.avg_price.toFixed(2)}</td>
+                            <td>$${holding.current_price.toFixed(2)}</td>
+                            <td>$${holding.value.toFixed(2)}</td>
+                            <td class="${changeClass}">
+                                ${holding.gain_loss >= 0 ? '+' : ''}$${holding.gain_loss.toFixed(2)} (${holding.gain_loss_percent >= 0 ? '+' : ''}${holding.gain_loss_percent.toFixed(2)}%)
+                            </td>
+                            <td>
+                                <button class="btn btn-outline-danger btn-sm" onclick="removeFromPortfolio('${holding.symbol}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }
+                
+                if (!html) {
+                    html = '<tr><td colspan="7" class="text-center py-4 text-muted">No holdings in portfolio</td></tr>';
+                }
+                
+                table.innerHTML = html;
+            } catch (error) {
+                console.error('Error loading portfolio:', error);
+                table.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-muted">Error loading portfolio</td></tr>';
+            }
+        }
+
+        async function addToWatchlist() {
+            const input = document.getElementById('addStockInput');
+            const symbol = input.value.trim().toUpperCase();
+            
+            if (!symbol) {
+                showToast('Please enter a stock symbol', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch(API_ENDPOINTS.watchlistAdd, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ symbol: symbol })
+                });
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    showToast('Error adding to watchlist: ' + data.error, 'error');
+                    return;
+                }
+                
+                showToast(`Added ${symbol} to watchlist`, 'success');
+                input.value = '';
+                loadWatchlist();
+            } catch (error) {
+                console.error('Error adding to watchlist:', error);
+                showToast('Error adding to watchlist', 'error');
+            }
+        }
+
+        async function removeFromWatchlist(symbol) {
+            try {
+                const response = await fetch(API_ENDPOINTS.watchlistRemove + symbol);
+                const data = await response.json();
+                
+                if (data.error) {
+                    showToast('Error removing from watchlist: ' + data.error, 'error');
+                    return;
+                }
+                
+                showToast(`Removed ${symbol} from watchlist`, 'success');
+                loadWatchlist();
+            } catch (error) {
+                console.error('Error removing from watchlist:', error);
+                showToast('Error removing from watchlist', 'error');
+            }
+        }
+
+        async function addToPortfolio() {
+            const symbol = document.getElementById('portfolioSymbol').value.trim().toUpperCase();
+            const shares = parseInt(document.getElementById('portfolioShares').value);
+            const price = parseFloat(document.getElementById('portfolioPrice').value);
+            
+            if (!symbol || isNaN(shares) || shares <= 0 || isNaN(price) || price <= 0) {
+                showToast('Please enter valid portfolio data', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch(API_ENDPOINTS.portfolioAdd, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        symbol: symbol,
+                        shares: shares,
+                        avg_price: price
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    showToast('Error adding to portfolio: ' + data.error, 'error');
+                    return;
+                }
+                
+                showToast(`Added ${symbol} to portfolio`, 'success');
+                document.getElementById('portfolioSymbol').value = '';
+                document.getElementById('portfolioShares').value = '';
+                document.getElementById('portfolioPrice').value = '';
+                loadPortfolio();
+                updatePortfolioMetrics();
+            } catch (error) {
+                console.error('Error adding to portfolio:', error);
+                showToast('Error adding to portfolio', 'error');
+            }
+        }
+
+        async function removeFromPortfolio(symbol) {
+            try {
+                const response = await fetch(API_ENDPOINTS.portfolioRemove + symbol);
+                const data = await response.json();
+                
+                if (data.error) {
+                    showToast('Error removing from portfolio: ' + data.error, 'error');
+                    return;
+                }
+                
+                showToast(`Removed ${symbol} from portfolio`, 'success');
+                loadPortfolio();
+                updatePortfolioMetrics();
+            } catch (error) {
+                console.error('Error removing from portfolio:', error);
+                showToast('Error removing from portfolio', 'error');
+            }
+        }
+
+        async function loadNewsFeed() {
+            const container = document.getElementById('newsFeed');
+            if (!container) return;
+
+            try {
+                const response = await fetch(API_ENDPOINTS.news);
+                const newsItems = await response.json();
+                
+                if (newsItems.error) {
+                    container.innerHTML = '<div class="text-center py-4 text-muted">News temporarily unavailable</div>';
+                    return;
+                }
+                
+                let html = '';
+                
+                newsItems.forEach(item => {
+                    const time = new Date(item.time).toLocaleTimeString();
+                    const impact = item.impact || 'Medium';
+                    const impactColor = impact === 'High' ? 'danger' : impact === 'Medium' ? 'warning' : 'info';
+                    
+                    html += `
+                        <div class="news-item">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h6 class="mb-1">${item.title}</h6>
+                                <span class="badge bg-${impactColor}">${impact}</span>
+                            </div>
+                            <p class="text-muted mb-2" style="font-size: 0.9rem;">${item.description || 'No description available'}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">${item.source} • ${time}</small>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                container.innerHTML = html;
+            } catch (error) {
+                console.error('Error loading news:', error);
+                container.innerHTML = '<div class="text-center py-4 text-muted">Error loading news</div>';
+            }
+        }
+
+        async function loadEarningsCalendar() {
+            const container = document.getElementById('earningsCalendar');
+            if (!container) return;
+
+            try {
+                const response = await fetch(API_ENDPOINTS.earnings);
+                const earnings = await response.json();
+                
+                if (earnings.error) {
+                    container.innerHTML = '<div class="text-center py-4 text-muted">Earnings data temporarily unavailable</div>';
+                    return;
+                }
+                
+                let html = '<div class="table-responsive"><table class="table table-hover"><thead><tr><th>Symbol</th><th>Date</th><th>Estimated EPS</th><th>Estimated Revenue</th><th>Actions</th></tr></thead><tbody>';
+                
+                for (const earning of earnings) {
+                    html += `
+                        <tr>
+                            <td><strong>${earning.symbol}</strong></td>
+                            <td>${earning.date}</td>
+                            <td>$${earning.estimated_eps}</td>
+                            <td>$${earning.estimated_revenue.toLocaleString()}</td>
+                            <td>
+                                <button class="btn btn-ai btn-sm me-1" onclick="analyzeStock('${earning.symbol}')">
+                                    <i class="fas fa-brain"></i>
+                                </button>
+                                <button class="btn btn-outline-primary btn-sm" onclick="addToWatchlist('${earning.symbol}')">
+                                    <i class="fas fa-plus"></i> Watchlist
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }
+                
+                html += '</tbody></table></div>';
+                container.innerHTML = html;
+            } catch (error) {
+                console.error('Error loading earnings:', error);
+                container.innerHTML = '<div class="text-center py-4 text-muted">Error loading earnings data</div>';
+            }
+        }
+
+        function updateMarketPulse() {
+            const container = document.getElementById('marketPulse');
+            if (!container) return;
+
+            const pulseData = [
+                { name: 'S&P 500', value: '+0.8%', trend: 'up' },
+                { name: 'NASDAQ', value: '+1.2%', trend: 'up' },
+                { name: 'Dow Jones', value: '+0.5%', trend: 'up' },
+                { name: 'VIX', value: '-2.3%', trend: 'down' },
+                { name: 'USD Index', value: '+0.3%', trend: 'up' },
+                { name: 'Gold', value: '-0.2%', trend: 'down' }
+            ];
+
+            let html = '';
+            pulseData.forEach(item => {
+                const trendClass = item.trend === 'up' ? 'stock-change-positive' : 'stock-change-negative';
+                const trendIcon = item.trend === 'up' ? 'fa-arrow-up' : 'fa-arrow-down';
+                
+                html += `
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <strong>${item.name}</strong>
+                        </div>
+                        <div class="text-end">
+                            <span class="${trendClass}">
+                                ${item.value} <i class="fas ${trendIcon} ms-1"></i>
+                            </span>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function updateEconomicCalendar() {
+            const container = document.getElementById('economicCalendar');
+            if (!container) return;
+
+            const events = [
+                { event: 'Fed Interest Rate Decision', time: 'Tomorrow 2:00 PM', impact: 'High' },
+                { event: 'CPI Inflation Data', time: 'Wed 8:30 AM', impact: 'High' },
+                { event: 'Weekly Jobless Claims', time: 'Thu 8:30 AM', impact: 'Medium' },
+                { event: 'GDP Growth Rate', time: 'Fri 8:30 AM', impact: 'High' },
+                { event: 'Tech Earnings Season', time: 'Next Week', impact: 'Medium' }
+            ];
+
+            let html = '';
+            events.forEach(item => {
+                const impactColor = item.impact === 'High' ? 'danger' : 'warning';
+                
+                html += `
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <strong style="font-size: 0.9rem;">${item.event}</strong>
+                            <span class="badge bg-${impactColor}">${item.impact}</span>
+                        </div>
+                        <small class="text-muted">${item.time}</small>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        async function performAIAnalysis() {
+            const ticker = document.getElementById('aiTicker').value.trim().toUpperCase();
+            const depth = document.getElementById('analysisDepth').value;
+            const chartType = document.getElementById('chartType').value;
+            
+            if (!ticker) {
+                showToast('Please enter a stock symbol', 'error');
+                return;
+            }
+
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            analyzeBtn.innerHTML = '<div class="loading-ai me-2"></div>AI Analyzing...';
+            analyzeBtn.disabled = true;
+
+            const resultsSection = document.getElementById('analysisResults');
+            resultsSection.style.display = 'block';
+
+            try {
+                const response = await fetch(API_ENDPOINTS.analyze, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        symbol: ticker,
+                        analysis_type: depth
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    showToast('Analysis error: ' + data.error, 'error');
+                    return;
+                }
+                
+                // Update UI with analysis results
+                document.getElementById('aiDecision').textContent = data.analysis.decision;
+                document.getElementById('aiDecision').className = `badge fs-6 ${data.analysis.decision === 'BUY' ? 'bg-success' : data.analysis.decision === 'SELL' ? 'bg-danger' : 'bg-warning'}`;
+                document.getElementById('aiConfidence').textContent = data.analysis.confidence + '%';
+                document.getElementById('confidenceBar').style.width = data.analysis.confidence + '%';
+                document.getElementById('currentPrice').textContent = '$' + data.stock.price.toFixed(2);
+                document.getElementById('targetPrice').textContent = '$' + data.analysis.target_price;
+                document.getElementById('aiReasoning').textContent = data.analysis.reasoning;
+                
+                // Update technical indicators
+                document.getElementById('rsiValue').textContent = data.analysis.rsi;
+                document.getElementById('rsiValue').className = `indicator-value ${data.analysis.rsi > 70 ? 'indicator-bad' : data.analysis.rsi < 30 ? 'indicator-good' : 'indicator-neutral'}`;
+                document.getElementById('macdValue').textContent = data.analysis.macd;
+                document.getElementById('macdValue').className = `indicator-value ${data.analysis.macd === 'Bullish' ? 'indicator-good' : data.analysis.macd === 'Bearish' ? 'indicator-bad' : 'indicator-neutral'}`;
+                
+                // Create chart
+                createStockChart(ticker, data.historical_data, chartType);
+                
+                // Load related news
+                loadRelatedNews(ticker);
+                
+                // Scroll to results
+                resultsSection.scrollIntoView({ behavior: 'smooth' });
+                
+            } catch (error) {
+                console.error('Analysis error:', error);
+                showToast('Analysis temporarily unavailable', 'error');
+                document.getElementById('aiReasoning').textContent = 'Analysis temporarily unavailable. Please try again.';
+            } finally {
+                analyzeBtn.innerHTML = '<i class="fas fa-brain me-2"></i>Analyze with AI';
+                analyzeBtn.disabled = false;
+            }
+        }
+
+        function createStockChart(symbol, data, chartType) {
+            const ctx = document.getElementById('stockChart');
+            if (!ctx) return;
+
+            if (stockChart) {
+                stockChart.destroy();
+            }
+
+            const labels = data.map(item => item.date);
+            const prices = data.map(item => item.price);
+            
+            const chartConfig = {
+                type: chartType === 'area' ? 'line' : chartType,
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: `${symbol} Price`,
+                        data: prices,
+                        borderColor: '#2962ff',
+                        backgroundColor: chartType === 'area' ? 'rgba(41, 98, 255, 0.1)' : 'rgba(41, 98, 255, 0.5)',
+                        borderWidth: 2,
+                        pointRadius: 2,
+                        fill: chartType === 'area',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 2000,
+                        easing: 'easeInOutQuart'
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#ffffff'
+                            }
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                            titleColor: '#ffffff',
+                            bodyColor: '#ffffff',
+                            borderColor: 'rgba(41, 98, 255, 0.5)',
+                            borderWidth: 1
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#ffffff'
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#ffffff',
+                                callback: function(value) {
+                                    return '$' + value.toFixed(2);
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            stockChart = new Chart(ctx, chartConfig);
+        }
+
+        function initPortfolioChart() {
+            const ctx = document.getElementById('portfolioChart');
+            if (!ctx) return;
+
+            const portfolioData = {
+                labels: ['Technology', 'Healthcare', 'Finance', 'Energy', 'Consumer Goods'],
+                datasets: [{
+                    data: [35, 25, 20, 10, 10],
+                    backgroundColor: [
+                        '#2962ff',
+                        '#00c853',
+                        '#ff9800',
+                        '#f44336',
+                        '#9c27b0'
+                    ],
+                    borderWidth: 0
+                }]
+            };
+
+            portfolioChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: portfolioData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#ffffff',
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        async function loadRelatedNews(symbol) {
+            const container = document.getElementById('relatedNews');
+            if (!container) return;
+
+            container.innerHTML = `
+                <div class="text-center py-3">
+                    <div class="loading-ai"></div>
+                    <p>Finding news about ${symbol}...</p>
+                </div>
+            `;
+
+            // In a real implementation, this would fetch news specific to the symbol
+            // For demo, we'll use the general news endpoint
+            try {
+                const response = await fetch(API_ENDPOINTS.news);
+                const newsItems = await response.json();
+                
+                if (newsItems.error) {
+                    container.innerHTML = '<p class="text-center">News temporarily unavailable</p>';
+                    return;
+                }
+                
+                let html = '';
+                
+                for (let i = 0; i < Math.min(3, newsItems.length); i++) {
+                    const item = newsItems[i];
+                    const time = new Date(item.time).toLocaleDateString();
+                    
+                    html += `
+                        <div class="news-item">
+                            <h6 style="font-size: 0.9rem;">${item.title}</h6>
+                            <small class="text-muted">${item.source} • ${time}</small>
+                        </div>
+                    `;
+                }
+                
+                container.innerHTML = html || '<p class="text-center">No recent news found</p>';
+            } catch (error) {
+                console.error('Error loading related news:', error);
+                container.innerHTML = '<p class="text-center">News temporarily unavailable</p>';
+            }
+        }
+
+        function generateRecommendations() {
+            const container = document.getElementById('aiRecommendations');
+            if (!container) return;
+
+            const recommendations = [
+                {
+                    action: 'Consider reducing',
+                    target: 'Tech allocation',
+                    reason: 'High valuation concerns',
+                    confidence: 75
+                },
+                {
+                    action: 'Increase position in',
+                    target: 'Healthcare sector',
+                    reason: 'Aging population trend',
+                    confidence: 85
+                },
+                {
+                    action: 'Monitor closely',
+                    target: 'Energy stocks',
+                    reason: 'Volatile oil prices',
+                    confidence: 70
+                }
+            ];
+
+            let html = '';
+            recommendations.forEach(rec => {
+                html += `
+                    <div class="mb-3 p-3" style="background: rgba(255, 255, 255, 0.05); border-radius: 10px;">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <strong style="font-size: 0.9rem;">${rec.action} ${rec.target}</strong>
+                            <span class="badge" style="background: var(--ai-glow); color: #000;">${rec.confidence}%</span>
+                        </div>
+                        <small class="text-muted">${rec.reason}</small>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function updateRiskAnalysis() {
+            const container = document.getElementById('riskAnalysis');
+            if (!container) return;
+
+            const riskMetrics = [
+                { name: 'Portfolio Beta', value: '1.2', status: 'Medium' },
+                { name: 'Sharpe Ratio', value: '1.8', status: 'Good' },
+                { name: 'Max Drawdown', value: '15%', status: 'Acceptable' },
+                { name: 'Volatility', value: '22%', status: 'Medium' }
+            ];
+
+            let html = '';
+            riskMetrics.forEach(metric => {
+                const statusColor = metric.status === 'Good' ? 'success' : metric.status === 'Acceptable' ? 'warning' : 'info';
+                
+                html += `
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <strong style="font-size: 0.9rem;">${metric.name}</strong>
+                            <div style="font-size: 1.2rem; font-weight: 700;">${metric.value}</div>
+                        </div>
+                        <span class="badge bg-${statusColor}">${metric.status}</span>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // AI Chat Functions
+        function openAIChat() {
+            const chatContainer = document.getElementById('aiChatContainer');
+            if (chatContainer) {
+                chatContainer.classList.add('open');
+                document.getElementById('chatInput').focus();
+            }
+        }
+
+        function closeAIChat() {
+            const chatContainer = document.getElementById('aiChatContainer');
+            if (chatContainer) {
+                chatContainer.classList.remove('open');
+            }
+        }
+
+        async function sendAIMessage() {
+            const chatInput = document.getElementById('chatInput');
+            const message = chatInput.value.trim();
+            
+            if (!message) return;
+            
+            addChatMessage(message, true);
+            chatInput.value = '';
+            
+            addTypingIndicator();
+            
+            try {
+                const response = await fetch(API_ENDPOINTS.chat, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message: message })
+                });
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                
+                removeTypingIndicator();
+                addChatMessage(data.response, false);
+            } catch (error) {
+                console.error('Chat error:', error);
+                removeTypingIndicator();
+                addChatMessage("I'm experiencing technical difficulties. Please try again.", false);
+            }
+        }
+
+        function addChatMessage(message, isUser) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
+            messageDiv.textContent = message;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function addTypingIndicator() {
+            const chatMessages = document.getElementById('chatMessages');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message bot';
+            typingDiv.id = 'typing-indicator';
+            typingDiv.innerHTML = '<div class="loading-ai me-2"></div>AI is thinking...';
+            chatMessages.appendChild(typingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const typingIndicator = document.getElementById('typing-indicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+
+        // Utility Functions
+        function suggestRandomStock() {
+            const popularStocks = ['AAPL', 'MSFT', 'TSLA', 'NVDA', 'GOOGL', 'AMZN', 'META', 'NFLX', 'AMD', 'INTC'];
+            const randomStock = popularStocks[Math.floor(Math.random() * popularStocks.length)];
+            document.getElementById('aiTicker').value = randomStock;
+        }
+
+        function quickAnalyze(symbol) {
+            document.getElementById('aiTicker').value = symbol;
+            performAIAnalysis();
+        }
+
+        function analyzeStock(symbol) {
+            document.getElementById('aiTicker').value = symbol;
+            document.getElementById('analysisDepth').value = 'deep';
+            performAIAnalysis();
+        }
+
+        function analyzeCrypto(symbol) {
+            document.getElementById('aiTicker').value = symbol;
+            document.getElementById('analysisDepth').value = 'deep';
+            performAIAnalysis();
+        }
+
+        function optimizeWatchlist() {
+            const btn = document.querySelector('button[onclick="optimizeWatchlist()"]');
+            btn.innerHTML = '<div class="loading-ai me-2"></div>Optimizing...';
+            btn.disabled = true;
+            
+            setTimeout(() => {
+                // Simulate AI optimization
+                const newStocks = ['ADBE', 'CRM', 'SHOP', 'SQ'];
+                newStocks.forEach(stock => {
+                    if (!watchlistData.includes(stock) && watchlistData.length < 8) {
+                        addToWatchlist(stock);
+                    }
+                });
+                
+                showToast('Watchlist optimized with AI-selected high-potential stocks!', 'success');
+                
+                btn.innerHTML = '<i class="fas fa-magic me-1"></i>AI Optimize';
+                btn.disabled = false;
+            }, 2000);
+        }
+
+        function analyzePortfolio() {
+            const btn = document.querySelector('button[onclick="analyzePortfolio()"]');
+            btn.innerHTML = '<div class="loading-ai me-2"></div>Analyzing...';
+            btn.disabled = true;
+            
+            setTimeout(async () => {
+                try {
+                    const response = await fetch(API_ENDPOINTS.chat, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ message: 'Provide portfolio analysis advice focusing on diversification and risk management.' })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+                    
+                    addChatMessage('Portfolio Analysis: ' + data.response, false);
+                    openAIChat();
+                } catch (error) {
+                    console.error('Portfolio analysis error:', error);
+                    addChatMessage('Portfolio analysis temporarily unavailable.', false);
+                } finally {
+                    btn.innerHTML = '<i class="fas fa-briefcase me-2"></i>Analyze Portfolio';
+                    btn.disabled = false;
+                }
+            }, 2000);
+        }
+
+        function filterNews(filter) {
+            // This would filter news based on the selected filter
+            // For demo, we'll just reload the news
+            loadNewsFeed();
+            showToast(`Filtering news: ${filter}`, 'info');
+        }
+
+        function showToast(message, type = 'info') {
+            const toastContainer = document.getElementById('toastContainer') || createToastContainer();
+            
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            let icon = 'fa-info-circle';
+            if (type === 'success') icon = 'fa-check-circle';
+            if (type === 'error') icon = 'fa-exclamation-circle';
+            
+            toast.innerHTML = `
+                <i class="fas ${icon} me-2"></i>
+                <span>${message}</span>
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            // Remove toast after animation
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        function createToastContainer() {
+            const container = document.createElement('div');
+            container.id = 'toastContainer';
+            container.className = 'toast-container';
+            document.body.appendChild(container);
+            return container;
+        }
+
+        // Initialize animations
+        function initAnimations() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.card').forEach(card => {
+                observer.observe(card);
+            });
+        }
+
+        // Update market sentiment periodically
+        setInterval(async () => {
+            try {
+                const response = await fetch(API_ENDPOINTS.chat, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message: 'Rate current market sentiment from 0-100 (bearish to bullish). Return only the number.' })
+                });
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                
+                const sentimentValue = parseInt(data.response) || 65;
+                
+                document.getElementById('sentimentBar').style.width = sentimentValue + '%';
+                
+                const sentimentText = sentimentValue > 70 ? 'Bullish' : sentimentValue > 40 ? 'Neutral' : 'Bearish';
+                document.getElementById('marketSentiment').innerHTML = `AI detects <strong>${sentimentText}</strong> market sentiment (${sentimentValue}/100)`;
+            } catch (error) {
+                console.error('Error updating sentiment:', error);
+            }
+        }, 60000); // Update every minute
+
+        // Initialize everything when DOM is ready
+        initAnimations();
+    </script>
+</body>
+</html>  
