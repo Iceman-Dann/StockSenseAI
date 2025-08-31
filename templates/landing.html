@@ -1,1 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StockSense AI - Intelligent Stock Market Analysis</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #2962ff;
+            --secondary: #0039cb;
+            --success: #00c853;
+            --warning: #ffab00;
+            --danger: #ff1744;
+            --dark: #0a0a1a;
+            --light: #f8f9fa;
+            --card-bg: #1a1a2e;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --ai-glow: #00ff88;
+            --gradient-start: #0c0c2d;
+            --gradient-end: #1a1a40;
+            --accent-purple: #8b5cf6;
+            --accent-cyan: #06b6d4;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: rgba(10, 10, 35, 0.95) !important;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            padding: 15px 0;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.8rem;
+            background: linear-gradient(45deg, var(--ai-glow), var(--primary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+
+        .nav-link {
+            color: var(--text-primary) !important;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--ai-glow) !important;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(41, 98, 255, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(0, 255, 136, 0.2) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, var(--text-primary), var(--ai-glow));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: titleGlow 3s infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            0% { text-shadow: 0 0 10px rgba(0, 255, 136, 0.3); }
+            100% { text-shadow: 0 0 30px rgba(0, 255, 136, 0.7); }
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            color: var(--text-secondary);
+        }
+
+        .hero-cta {
+            margin-top: 2rem;
+        }
+
+        /* Animated Elements */
+        .floating-element {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary), var(--accent-purple));
+            opacity: 0.3;
+            filter: blur(40px);
+            animation: float 15s infinite ease-in-out;
+        }
+
+        .floating-element:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-element:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            top: 60%;
+            left: 70%;
+            animation-delay: -5s;
+        }
+
+        .floating-element:nth-child(3) {
+            width: 250px;
+            height: 250px;
+            top: 30%;
+            left: 60%;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-20px) scale(1.05); }
+        }
+
+        /* Feature Cards */
+        .feature-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            height: 100%;
+            position: relative;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--ai-glow), var(--primary));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.5s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, var(--ai-glow), var(--primary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Buttons */
+        .btn-ai {
+            background: linear-gradient(135deg, var(--ai-glow), #00c853);
+            color: #000;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
+            text-decoration: none;
+            display: inline-block;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-ai::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: 0.5s;
+        }
+
+        .btn-ai:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 255, 136, 0.5);
+            color: #000;
+        }
+
+        .btn-ai:hover::before {
+            left: 100%;
+        }
+
+        .btn-gradient {
+            background: linear-gradient(135deg, var(--primary), var(--accent-purple));
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-gradient:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(41, 98, 255, 0.4);
+            color: white;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 1s ease forwards;
+        }
+
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.6s; }
+        .delay-4 { animation-delay: 0.8s; }
+
+        /* Real-time Ticker */
+        .ticker-container {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px 0;
+            overflow: hidden;
+            position: relative;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .ticker {
+            display: flex;
+            animation: tickerScroll 30s linear infinite;
+        }
+
+        .ticker-item {
+            display: flex;
+            align-items: center;
+            margin: 0 30px;
+            white-space: nowrap;
+        }
+
+        .ticker-symbol {
+            font-weight: 700;
+            margin-right: 10px;
+        }
+
+        .ticker-price {
+            margin-right: 10px;
+        }
+
+        .ticker-change {
+            font-weight: 600;
+        }
+
+        .positive {
+            color: var(--success);
+        }
+
+        .negative {
+            color: var(--danger);
+        }
+
+        @keyframes tickerScroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* Stats Section */
+        .stats-section {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 80px 0;
+        }
+
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--ai-glow), var(--primary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Testimonials */
+        .testimonial-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            position: relative;
+            height: 100%;
+        }
+
+        .testimonial-card::before {
+            content: '"';
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 4rem;
+            opacity: 0.1;
+            font-family: serif;
+        }
+
+        /* Footer */
+        .footer {
+            background: rgba(10, 10, 35, 0.95);
+            padding: 60px 0 30px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .stat-number {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-brain me-2"></i>StockSense AI
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#how-it-works">How It Works</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#testimonials">Testimonials</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dashboard">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-ai btn-sm ms-2" href="/dashboard">
+                            <i class="fas fa-rocket me-1"></i>Get Started
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        
+        <div class="container hero-content">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="hero-title fade-in">AI-Powered Stock Market Intelligence</h1>
+                    <p class="hero-subtitle fade-in delay-1">Make smarter investment decisions with real-time analysis, predictive insights, and personalized recommendations powered by artificial intelligence.</p>
+                    <div class="hero-cta fade-in delay-2">
+                        <a href="/dashboard" class="btn btn-ai me-3">
+                            <i class="fas fa-bolt me-2"></i>Launch Dashboard
+                        </a>
+                        <a href="#how-it-works" class="btn btn-gradient">
+                            <i class="fas fa-play-circle me-2"></i>See How It Works
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6 fade-in delay-3">
+                    <div class="card ai-enhanced" style="border: 1px solid var(--ai-glow); box-shadow: 0 0 30px rgba(0, 255, 136, 0.2);">
+                        <div class="card-header">
+                            <h4><span class="real-time-indicator"></span>Live Market Preview</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-6 mb-3">
+                                    <div class="d-flex justify-content-between">
+                                        <strong>AAPL</strong>
+                                        <span class="positive">+1.2%</span>
+                                    </div>
+                                    <div>$175.34</div>
+                                </div>
+                                <div class="col-6 mb-3">
+                                    <div class="d-flex justify-content-between">
+                                        <strong>MSFT</strong>
+                                        <span class="positive">+0.8%</span>
+                                    </div>
+                                    <div>$340.21</div>
+                                </div>
+                                <div class="col-6 mb-3">
+                                    <div class="d-flex justify-content-between">
+                                        <strong>TSLA</strong>
+                                        <span class="negative">-0.5%</span>
+                                    </div>
+                                    <div>$240.89</div>
+                                </div>
+                                <div class="col-6 mb-3">
+                                    <div class="d-flex justify-content-between">
+                                        <strong>NVDA</strong>
+                                        <span class="positive">+2.1%</span>
+                                    </div>
+                                    <div>$450.67</div>
+                                </div>
+                            </div>
+                            <div class="text-center mt-3">
+                                <div class="loading-ai"></div>
+                                <small class="text-muted">AI analyzing market conditions...</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Real-time Ticker -->
+    <div class="ticker-container">
+        <div class="ticker">
+            <div class="ticker-item">
+                <span class="ticker-symbol">AAPL</span>
+                <span class="ticker-price">$175.34</span>
+                <span class="ticker-change positive">+1.2%</span>
+            </div>
+            <div class="ticker-item">
+                <span class="ticker-symbol">MSFT</span>
+                <span class="ticker-price">$340.21</span>
+                <span class="ticker-change positive">+0.8%</span>
+            </div>
+            <div class="ticker-item">
+                <span class="ticker-symbol">TSLA</span>
+                <span class="ticker-price">$240.89</span>
+                <span class="ticker-change negative">-0.5%</span>
+            </div>
+            <div class="ticker-item">
+                <span class="ticker-symbol">NVDA</span>
+                <span class="ticker-price">$450.67</span>
+                <span class="ticker-change positive">+2.1%</span>
+            </div>
+            <div class="ticker-item">
+                <span class="ticker-symbol">GOOGL</span>
+                <span class="ticker-price">$130.45</span>
+                <span class="ticker-change positive">+0.7%</span>
+            </div>
+            <div class="ticker-item">
+                <span class="ticker-symbol">AMZN</span>
+                <span class="ticker-price">$145.12</span>
+                <span class="ticker-change negative">-0.3%</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <section id="features" class="py-5" style="background: rgba(10, 10, 35, 0.7);">
+        <div class="container">
+            <div class="row text-center mb-5">
+                <div class="col-12">
+                    <h2 class="display-4 fw-bold mb-3">Powerful AI Features</h2>
+                    <p class="lead">Leverage the power of artificial intelligence for your investment strategy</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-4 fade-in">
+                    <div class="feature-card text-center p-4">
+                        <div class="feature-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h4>AI Prediction Engine</h4>
+                        <p>Our advanced AI algorithms analyze market patterns and historical data to predict stock movements with high accuracy.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4 fade-in delay-1">
+                    <div class="feature-card text-center p-4">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h4>Real-time Analytics</h4>
+                        <p>Get real-time market data, technical indicators, and sentiment analysis all in one place.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4 fade-in delay-2">
+                    <div class="feature-card text-center p-4">
+                        <div class="feature-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h4>Smart Portfolio</h4>
+                        <p>AI-powered portfolio management that automatically rebalances based on market conditions and your risk profile.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4 fade-in">
+                    <div class="feature-card text-center p-4">
+                        <div class="feature-icon">
+                            <i class="fas fa-newspaper"></i>
+                        </div>
+                        <h4>News Sentiment Analysis</h4>
+                        <p>AI scans thousands of news sources to gauge market sentiment and predict impact on stock prices.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4 fade-in delay-1">
+                    <div class="feature-card text-center p-4">
+                        <div class="feature-icon">
+                            <i class="fas fa-bell"></i>
+                        </div>
+                        <h4>Smart Alerts</h4>
+                        <p>Receive personalized alerts for buying opportunities, price targets, and market changes.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4 fade-in delay-2">
+                    <div class="feature-card text-center p-4">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h4>Risk Management</h4>
+                        <p>Advanced risk assessment tools that help protect your investments during market volatility.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-md-3 col-6 mb-4 fade-in">
+                    <div class="stat-number" id="stat1">0</div>
+                    <p>AI Predictions Today</p>
+                </div>
+                <div class="col-md-3 col-6 mb-4 fade-in delay-1">
+                    <div class="stat-number" id="stat2">0</div>
+                    <p>Stocks Analyzed</p>
+                </div>
+                <div class="col-md-3 col-6 mb-4 fade-in delay-2">
+                    <div class="stat-number" id="stat3">0</div>
+                    <p>Happy Investors</p>
+                </div>
+                <div class="col-md-3 col-6 mb-4 fade-in delay-3">
+                    <div class="stat-number" id="stat4">0</div>
+                    <p>Accuracy Rate</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" class="py-5">
+        <div class="container">
+            <div class="row text-center mb-5">
+                <div class="col-12">
+                    <h2 class="display-4 fw-bold mb-3">How StockSense AI Works</h2>
+                    <p class="lead">Our AI-powered platform makes stock market analysis simple and effective</p>
+                </div>
+            </div>
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-4 fade-in">
+                    <div class="card ai-enhanced">
+                        <div class="card-body p-5">
+                            <h3 class="mb-4">1. Connect Your Portfolio</h3>
+                            <p>Securely link your investment accounts or manually add your holdings to get started.</p>
+                            <div class="mt-4">
+                                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIyMDAiIHZpZXdCb3g9IjAgMCA4MDAgNDAwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHg9IjUwIiB5PSI1MCIgd2lkdGg9IjcwMCIgaGVpZ2h0PSIzMDAiIGZpbGw9IiMxYTFhMmUiIHN0cm9rZT0iIzI5NjJmZiIgc3Ryb2tlLXdpZHRoPSIyIi8+PGNpcmNsZSBjeD0iMTUwIiBjeT0iMTUwIiByPSI0MCIgZmlsbD0iIzAwZmY4OCIvPjxjaXJjbGUgY3g9IjE1MCIgY3k9IjI1MCIgcj0iNDAiIGZpbGw9IiMyOTYyZmYiLz48cmVjdCB4PSIyMjAiIHk9IjExMCIgd2lkdGg9IjQ1MCIgaGVpZ2h0PSI4MCIgZmlsbD0iIzFlMWUyZSIgc3Ryb2tlPSIjMDBmZjg4IiBzdHJva2Utd2lkdGg9IjIiLz48cmVjdCB4PSIyMjAiIHk9IjIxMCIgd2lkdGg9IjQ1MCIgaGVpZ2h0PSI4MCIgZmlsbD0iIzFlMWUyZSIgc3Ryb2tlPSIjMDBmZjg4IiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=" class="img-fluid" alt="Portfolio Connection">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 mb-4 fade-in delay-1">
+                    <div class="card ai-enhanced">
+                        <div class="card-body p-5">
+                            <h3 class="mb-4">2. AI Analysis</h3>
+                            <p>Our algorithms analyze market data, news sentiment, and technical indicators to generate insights.</p>
+                            <div class="mt-4">
+                                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIyMDAiIHZpZXdCb3g9IjAgMCA4MDAgNDAwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik01MCwxNTAgTDIwMCwxNTAgTDI1MCw1MCBMNDAwLDE1MCBMNTUwLDI1MCBMNzAwLDE1MCBMNzUwLDI1MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDBmZjg4IiBzdHJva2Utd2lkdGg9IjMiLz48Y2lyY2xlIGN4PSI1MCIgY3k9IjE1MCIgcj0iOCIgZmlsbD0iIzAwZmY4OCIvPjxjaXJjbGUgY3g9IjIwMCIgY3k9IjE1MCIgcj0iOCIgZmlsbD0iIzAwZmY4OCIvPjxjaXJjbGUgY3g9IjI1MCIgY3k9IjUwIiByPSI4IiBmaWxsPSIjMDBmZjg4Ii8+PGNpcmNsZSBjeD0iNDAwIiBjeT0iMTUwIiByPSI4IiBmaWxsPSIjMDBmZjg4Ii8+PGNpcmNsZSBjeD0iNTUwIiBjeT0iMjUwIiByPSI4IiBmaWxsPSIjMDBmZjg4Ii8+PGNpcmNsZSBjeD0iNzAwIiBjeT0iMTUwIiByPSI4IiBmaWxsPSIjMDBmZjg4Ii8+PGNpcmNsZSBjeD0iNzUwIiBjeT0iMjUwIiByPSI4IiBmaWxsPSIjMDBmZjg4Ii8+PC9zdmc+" class="img-fluid" alt="AI Analysis">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 mb-4 fade-in delay-2">
+                    <div class="card ai-enhanced">
+                        <div class="card-body p-5">
+                            <h3 class="mb-4">3. Get Recommendations</h3>
+                            <p>Receive actionable buy, hold, or sell recommendations with confidence scores and reasoning.</p>
+                            <div class="mt-4">
+                                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIyMDAiIHZpZXdCb3g9IjAgMCA4MDAgNDAwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHg9IjUwIiB5PSI1MCIgd2lkdGg9IjcwMCIgaGVpZ2h0PSIzMDAiIGZpbGw9IiMxYTFhMmUiIHN0cm9rZT0iIzI5NjJmZiIgc3Ryb2tlLXdpZHRoPSIyIi8+PHJlY3QgeD0iODAiIHk9IjgwIiB3aWR0aD0iNjQwIiBoZWlnaHQ9IjYwIiBmaWxsPSIjMWExYTJlIiBzdHJva2U9IiMwMGZmODgiIHN0cm9rZS13aWR0aD0iMiIvPjxyZWN0IHg9IjgwIiB5PSIxNjAiIHdpZHRoPSI2NDAiIGhlaWdodD0iNjAiIGZpbGw9IiMxYTFhMmUiIHN0cm9rZT0iIzI5NjJmZiIgc3Ryb2tlLXdpZHRoPSIyIi8+PHJlY3QgeD0iODAiIHk9IjI0MCIgd2lkdGg9IjY0MCIgaGVpZ2h0PSI2MCIgZmlsbD0iIzFhMWEyZSIgc3Ryb2tlPSIjMDBmZjg4IiBzdHJva2Utd2lkdGg9IjIiLz48Y2lyY2xlIGN4PSI3MDAiIGN5PSI4MCIgcj0iMjAiIGZpbGw9IiMwMGZmODgiLz48Y2lyY2xlIGN4PSI3MDAiIGN5PSIyNDAiIHI9IjIwIiBmaWxsPSIjMDBmZjg4Ii8+PGNpcmNsZSBjeD0iNzAwIiBjeT0iMTYwIiByPSIyMCIgZmlsbD0iI2ZmMTc0NCIvPjwvc3ZnPg==" class="img-fluid" alt="Recommendations">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 mb-4 fade-in delay-3">
+                    <div class="card ai-enhanced">
+                        <div class="card-body p-5">
+                            <h3 class="mb-4">4. Maximize Returns</h3>
+                            <p>Execute trades with confidence and watch your portfolio grow with AI-powered insights.</p>
+                            <div class="mt-4">
+                                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIyMDAiIHZpZXdCb3g9IjAgMCA4MDAgNDAwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik01MCwzMDAgTDEwMCwyMDAgTDIwMCwyNTAgTDMwMCwxMDAgTDQwMCwyMDAgTDUwMCwxNTAgTDYwMCwyNTAgTDcwMCwxNTAgTDc1MCwyMDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzAwZmY4OCIgc3Ryb2tlLXdpZHRoPSI1Ii8+PC9zdmc+" class="img-fluid" alt="Growth Chart">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section id="testimonials" class="py-5" style="background: rgba(10, 10, 35, 0.7);">
+        <div class="container">
+            <div class="row text-center mb-5">
+                <div class="col-12">
+                    <h2 class="display-4 fw-bold mb-3">What Our Users Say</h2>
+                    <p class="lead">Join thousands of investors who have transformed their trading with StockSense AI</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-4 fade-in">
+                    <div class="testimonial-card">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                <span class="text-white fw-bold">JD</span>
+                            </div>
+                            <div class="ms-3">
+                                <h5 class="mb-0">John Doe</h5>
+                                <small class="text-muted">Professional Trader</small>
+                            </div>
+                        </div>
+                        <p class="mb-0">"StockSense AI has completely transformed my trading strategy. The AI predictions are incredibly accurate, and I've seen a 35% increase in my portfolio returns since I started using it."</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4 fade-in delay-1">
+                    <div class="testimonial-card">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="rounded-circle bg-success d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                <span class="text-white fw-bold">SM</span>
+                            </div>
+                            <div class="ms-3">
+                                <h5 class="mb-0">Sarah Miller</h5>
+                                <small class="text-muted">Investment Advisor</small>
+                            </div>
+                        </div>
+                        <p class="mb-0">"I recommend StockSense AI to all my clients. The risk management features have helped them navigate market volatility much more effectively than traditional methods."</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4 fade-in delay-2">
+                    <div class="testimonial-card">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="rounded-circle bg-warning d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                <span class="text-dark fw-bold">RJ</span>
+                            </div>
+                            <div class="ms-3">
+                                <h5 class="mb-0">Robert Johnson</h5>
+                                <small class="text-muted">Retail Investor</small>
+                            </div>
+                        </div>
+                        <p class="mb-0">"As someone new to investing, StockSense AI has been a game-changer. The AI explanations help me understand why certain stocks are recommended, which has accelerated my learning curve dramatically."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center">
+                    <h2 class="display-4 fw-bold mb-4">Ready to Transform Your Investing?</h2>
+                    <p class="lead mb-5">Join thousands of investors who are already using AI to make smarter investment decisions</p>
+                    <a href="/dashboard" class="btn btn-ai btn-lg me-3">
+                        <i class="fas fa-bolt me-2"></i>Get Started Now
+                    </a>
+                    <a href="#features" class="btn btn-gradient btn-lg">
+                        <i class="fas fa-info-circle me-2"></i>Learn More
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h4 class="mb-4"><i class="fas fa-brain me-2"></i>StockSense AI</h4>
+                    <p>Advanced AI-powered stock market analysis and prediction platform.</p>
+                    <div class="d-flex mt-4">
+                        <a href="#" class="text-secondary me-3"><i class="fab fa-twitter fa-lg"></i></a>
+                        <a href="#" class="text-secondary me-3"><i class="fab fa-facebook fa-lg"></i></a>
+                        <a href="#" class="text-secondary me-3"><i class="fab fa-linkedin fa-lg"></i></a>
+                        <a href="#" class="text-secondary"><i class="fab fa-instagram fa-lg"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 mb-4">
+                    <h5 class="mb-4">Features</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">AI Predictions</a></li>
+                        <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">Portfolio Management</a></li>
+                        <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">Market Analysis</a></li>
+                        <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">Risk Assessment</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-4 mb-4">
+                    <h5 class="mb-4">Company</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">About Us</a></li>
+                        <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">Careers</a></li>
+                        <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">Blog</a></li>
+                        <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">Press</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-4 mb-4">
+                    <h5 class="mb-4">Support</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">Help Center</a></li>
+                        <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">Contact Us</a></li>
+                        <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">Privacy Policy</a></li>
+                        <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-4 mb-4">
+                    <h5 class="mb-4">Download</h5>
+                    <div class="d-flex flex-column">
+                        <a href="#" class="btn btn-outline-light mb-2">
+                            <i class="fab fa-apple me-2"></i>App Store
+                        </a>
+                        <a href="#" class="btn btn-outline-light">
+                            <i class="fab fa-google-play me-2"></i>Play Store
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4 bg-secondary">
+            <div class="row">
+                <div class="col-md-6 mb-3 mb-md-0">
+                    <p class="text-secondary mb-0">© 2023 StockSense AI. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="text-secondary mb-0">Designed with <i class="fas fa-heart text-danger"></i> for investors</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Animate stats counter
+        function animateCounter(element, end, duration) {
+            let start = 0;
+            const range = end - start;
+            const increment = end > start ? 1 : -1;
+            const stepTime = Math.abs(Math.floor(duration / range));
+            const timer = setInterval(() => {
+                start += increment;
+                element.textContent = start.toLocaleString();
+                if (start == end) clearInterval(timer);
+            }, stepTime);
+        }
+
+        // Initialize animations when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate stats
+            setTimeout(() => {
+                animateCounter(document.getElementById('stat1'), 12476, 2000);
+                animateCounter(document.getElementById('stat2'), 8932, 2000);
+                animateCounter(document.getElementById('stat3'), 5421, 2000);
+                animateCounter(document.getElementById('stat4'), 87, 2000);
+            }, 1000);
+
+            // Add intersection observer for fade-in elements
+            const fadeElements = document.querySelectorAll('.fade-in');
+            
+            const fadeObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = 1;
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            fadeElements.forEach(element => {
+                element.style.opacity = 0;
+                element.style.transform = 'translateY(30px)';
+                element.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+                fadeObserver.observe(element);
+            });
+        });
+
+        // Simple ticker animation
+        const ticker = document.querySelector('.ticker');
+        const tickerItems = document.querySelectorAll('.ticker-item');
+        const tickerWidth = tickerItems[0].offsetWidth;
+        
+        // Duplicate items for seamless looping
+        tickerItems.forEach(item => {
+            const clone = item.cloneNode(true);
+            ticker.appendChild(clone);
+        });
+    </script>
+</body>
+</html>
